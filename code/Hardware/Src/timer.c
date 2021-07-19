@@ -9,8 +9,6 @@
   
 /* Includes --------------------------------------------------------------------------*/
 #include "timer.h"
-#include "led.h"
-#include "lvgl.h"
 
 /* Public variables ------------------------------------------------------------------*/
 
@@ -111,7 +109,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if(htim==(&TIM3_Handler))
     {
-       lv_tick_inc(1);
+
     }
     else if(htim == (&TIM4_Handler))
     {
