@@ -12,13 +12,6 @@
 #include "sys.h"
 #include "delay.h"
 #include "usart.h"
-#include "lcd.h"
-#include "timer.h"
-#include "lvgl.h"
-#include "lv_port_disp.h"
-#include "lv_demo_widgets.h"
-
-
 
 /* Private variables -----------------------------------------------------------------*/
 
@@ -39,12 +32,6 @@ int main(void)
     /* Initialize all configured peripherals */
     delay_init(72);
     uart_init(115200);
-    TIM4_Init( 999, 71);
-    LCD_Init();
-    
-    lv_init();
-    lv_port_disp_init();
-    lv_demo_widgets();
     
     /* Pragram begin configuration----------------------------------------------------*/
 
@@ -53,7 +40,7 @@ int main(void)
     /* Infinite loop */
     while(1)
     {
-        lv_task_handler();
+
     }
 }
 
