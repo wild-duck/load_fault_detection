@@ -9,27 +9,36 @@
 
 /* Includes --------------------------------------------------------------------------*/
 #include "AD9854_hal.h"
+#include "delay.h"
 
 /* Private define --------------------------------------------------------------------*/
 #define CLK_SET_HH 1
 
 /* Private macro ---------------------------------------------------------------------*/
 #ifdef CLK_SET_LL
+
 #define CLK_Set 7
 const uint32_t  Freq_mult_ulong  = 1340357;
 const double Freq_mult_doulle = 1340357.032;
+
 #elif CLK_SET_L
+
 #define CLK_Set 9
 const uint_least32_t Freq_mult_ulong  = 1042500;		 
 const double Freq_mult_doulle = 1042499.9137431;
+
 #elif CLK_SET_H
+
 #define CLK_Set 0x48
 const uint32_t Freq_mult_ulong  = 1172812;
 const double Freq_mult_doulle = 1172812.403;
+
 #elif CLK_SET_HH
+
 #define CLK_Set 0x4A
 const uint32_t Freq_mult_ulong  = 938250;
 const double Freq_mult_doulle = 938249.9224;
+
 #endif
 
 /* Private variables -----------------------------------------------------------------*/
@@ -87,6 +96,10 @@ void AD9854_GPIO_Init(void)
   * @{
   */  
 
+/** @defgroup concurrent control
+  * @{
+  */ 
+
 /**
   * @brief AD9864 parallel port writes the data
   * @param addr: A 6-bit address
@@ -98,10 +111,10 @@ void AD9854_WR_Byte(uint8_t addr, uint8_t dat)
 {
     uint16_t Tmp;
 
-    Tmp = GPIO_ReadOutputData(GPIOA);
-    GPIO_Write(GPIOA, (uint16_t)(addr & 0x3f) | (Tmp & 0xFFC0)); // ADDER
-    Tmp = GPIO_ReadOutputData(GPIOB);
-    GPIO_Write(GPIOB, (uint16_t)(dat << 8) | (Tmp & 0x00FF)); // DATA
+    Tmp = (GPIOA->ODR);
+    GPIOA->ODR = (uint16_t)((addr & 0x3f) | (Tmp & 0xFFC0)); // ADDER
+    Tmp = (GPIOB->ODR);
+    GPIOB->ODR = ((uint16_t)(dat << 8) | (Tmp & 0x00FF)); // DATA
     AD9854_WR_CLR;
 	AD9854_WR_SET;
 }
@@ -120,9 +133,9 @@ void AD9854_Init(void)
 //	AD9854_UDCLK_Clr;
 // 	AD9854_RST_Set;                // reset AD9854
 	AD9854_RST_CLR;
-	Delay_10us (10);
+	delay_us(100);
 	AD9854_RST_SET;
-	Delay_10us (10);
+	delay_us(100);
 	AD9854_RST_CLR;
 
  	AD9854_WR_Byte(0x1d,0x00);	 	 // Start the comparator, only enabled it can the square be generated
@@ -206,8 +219,8 @@ void Freq_Double_Convert(double Freq)
 
 /**
   * @brief sine generate
-  * @param Freq the frequence of signal, 0~(1/2)*SYSCLK
-  * @param Shape the amplitude of the signal, 0~4095
+  * @param Freq： the frequence of signal, 0~(1/2)*SYSCLK
+  * @param Shape： the amplitude of the signal, 0~4095
   * @retval None
   * @note If you want to use the function @ref Freq_Convert(long Freq) 
   *       you must use this function to generate the sinusoidal signal
@@ -221,26 +234,30 @@ void AD9854_SetSine(uint32_t Freq,uint16_t Shape)
 
     Freq_Convert(Freq); // change frequence
 
-    for(count=6;count>0;)   // write 6-bit frequence-control  
+    /* write 6-bit frequence-control */
+    for(count=6;count>0;)
     {
         AD9854_WR_Byte(Address++, FreqWord[--count]);
     }
 
-    AD9854_WR_Byte(0x21, (Shape >> 8) & 0x00FF); // set the amplitude of the channel I 
+    /* set the amplitude of the channel I */
+    AD9854_WR_Byte(0x21, (Shape >> 8) & 0x00FF);
     AD9854_WR_Byte(0x22, (Shape & 0x00ff));
 
-    AD9854_WR_Byte(0x23, (Shape >> 8) & 0x00FF); // set the ammplitude of the channel Q
+    /* set the amplitude of the channel Q */
+    AD9854_WR_Byte(0x23, (Shape >> 8) & 0x00FF);
     AD9854_WR_Byte(0x24, (Shape & 0x00ff));
 
-    AD9854_UDCLK_SET; // update output
+    /* update the output */
+    AD9854_UDCLK_SET;
     AD9854_UDCLK_CLR;
 
 }
 
 /**
   * @brief sine generate with high precision
-  * @param Freq the frequence of signal, 0~(1/2)*SYSCLK
-  * @param Shape the amplitude of the signal, 0~4095
+  * @param Freq： the frequence of signal, 0~(1/2)*SYSCLK
+  * @param Shape： the amplitude of the signal, 0~4095
   * @retval None
   * @note If you want to use the function @ref Freq_Double_Convert(double Freq)
   *       you must use this function to generate the sinusoidal signal
@@ -254,18 +271,22 @@ void AD9854_SetSine_Double(double Freq,uint16_t Shape)
 
     Freq_Double_Convert(Freq); // change frequence
 
-    for(count=6;count>0;)   // write 6-bit frequence-control  
+    /* write 6-bit frequence-control */
+    for(count=6;count>0;) 
     {
         AD9854_WR_Byte(Address++, FreqWord[--count]);
     }
 
-    AD9854_WR_Byte(0x21, Shape >> 8); // set the amplitude of the channel I
+    /* set the amplitude of the channel I */
+    AD9854_WR_Byte(0x21, Shape >> 8);
     AD9854_WR_Byte(0x22, (uint8_t)(Shape & 0x00ff));
 
-    AD9854_WR_Byte(0x23, Shape >> 8); // set the ammplitude of the channel Q
+    /* set the amplitude of the channel Q */
+    AD9854_WR_Byte(0x23, Shape >> 8);
     AD9854_WR_Byte(0x24, (uint8_t)(Shape & 0x00ff));
 
-    AD9854_UDCLK_SET; // update output
+    /* update the output */
+    AD9854_UDCLK_SET;
     AD9854_UDCLK_CLR;
 
 }
@@ -302,25 +323,30 @@ void AD9854_SetFSK(uint32_t Freq1, uint32_t Freq2)
 
     Freq_Convert(Freq1);    // change frequence 1
 	
-	for(count=6;count>0;)   // write 6-bit frequence-control 
+    /* write 6-bit frequence-control */
+	for(count=6;count>0;)
     {
 		AD9854_WR_Byte(Address1++,FreqWord[--count]);
     }
 	
-	Freq_convert(Freq2);    // change frequence 2
+	Freq_Convert(Freq2);    // change frequence 2
 
-	for(count=6;count>0;)   // write 6-bit frequence-control 
+    /* write 6-bit frequence-control */
+	for(count=6;count>0;)
     {
 		AD9854_WR_Byte(Address2++,FreqWord[--count]);
     }
 
-    AD9854_WR_Byte(0x21, Shape >> 8); // set the amplitude of the channel I
+    /* set the amplitude of the channel I */
+    AD9854_WR_Byte(0x21, Shape >> 8);
     AD9854_WR_Byte(0x22, (uint8_t)(Shape & 0xff));
 
-    AD9854_WR_Byte(0x23, Shape >> 8); // set the amplitude of the channel Q
+    /* set the amplitude of the channel Q */
+    AD9854_WR_Byte(0x23, Shape >> 8);
     AD9854_WR_Byte(0x24, (uint8_t)(Shape & 0xff));
 
-    AD9854_UDCLK_SET;   // update output
+    /* update the output */
+    AD9854_UDCLK_SET;
     AD9854_UDCLK_CLR;		
 }
 
@@ -356,26 +382,32 @@ void AD9854_SetBPSK(uint16_t Phase1,uint16_t Phase2)
 
     Address = 0x04; // chose the original value of address
 
-    AD9854_WR_Byte(0x00, Phase1 >> 8); // set the phase 1
+    /* set the phase 1 */
+    AD9854_WR_Byte(0x00, Phase1 >> 8);
     AD9854_WR_Byte(0x01, (uint8_t)(Phase1 & 0xff));
 
-    AD9854_WR_Byte(0x02, Phase2 >> 8); // set the phase 2
+    /* set the phase 2 */
+    AD9854_WR_Byte(0x02, Phase2 >> 8);
     AD9854_WR_Byte(0x03, (uint8_t)(Phase2 & 0xff));
 
-    Freq_convert(Freq);    // change frequence
+    Freq_Convert(Freq);    // change frequence
 
-	for(count=6;count>0;)   // write 6-bit frequence-control 
+    /* write 6-bit frequence-control */
+	for(count=6;count>0;)  
     {
 		AD9854_WR_Byte(Address++,FreqWord[--count]);
     }
 
-    AD9854_WR_Byte(0x21, Shape >> 8); // set the amplitude of the channel I
+    /* set the amplitude of the channel I */
+    AD9854_WR_Byte(0x21, Shape >> 8);
     AD9854_WR_Byte(0x22, (uint8_t)(Shape & 0xff));
 
-    AD9854_WR_Byte(0x23, Shape >> 8); // set the amplitude of the channel Q
+    /* set the amplitude of the channel Q */
+    AD9854_WR_Byte(0x23, Shape >> 8);
     AD9854_WR_Byte(0x24, (uint8_t)(Shape & 0xff));
 
-    AD9854_UDCLK_SET;   // update output
+    /* update the output */
+    AD9854_UDCLK_SET;   
     AD9854_UDCLK_CLR;		
 }
 
@@ -407,22 +439,26 @@ void AD9854_SetOSK(uint8_t RateShape)
 
     Address = 0x04; // chose the original value of address
 
-    Freq_convert(Freq);    // change frequence
+    Freq_Convert(Freq);    // change frequence
 
-	for(count=6;count>0;)   // write 6-bit frequence-control 
+    /* write 6-bit frequence-control */
+	for(count=6;count>0;) 
     {
 		AD9854_WR_Byte(Address++,FreqWord[--count]);
     }
 
-    AD9854_WR_Byte(0x21, Shape >> 8); // set the amplitude of the channel I
+    /* set the amplitude of the channel I */
+    AD9854_WR_Byte(0x21, Shape >> 8);
     AD9854_WR_Byte(0x22, (uint8_t)(Shape & 0xff));
 
-    AD9854_WR_Byte(0x23, Shape >> 8); // set the amplitude of the channel Q
+    /* set the amplitude of the channel Q */
+    AD9854_WR_Byte(0x23, Shape >> 8);
     AD9854_WR_Byte(0x24, (uint8_t)(Shape & 0xff));
 
     AD9854_WR_Byte(0x25,RateShape); // set OSK slope 
 
-    AD9854_UDCLK_SET;   // update output
+    /* update the output */
+    AD9854_UDCLK_SET;
     AD9854_UDCLK_CLR;		
 }
 
@@ -442,8 +478,8 @@ void AD9854_AM_Init(void)
 
 /**
   * @brief generate the AM signal
-  * @param Freq the frequence of signal, 0~(1/2)*SYSCLK
-  * @param Shape the amplitude of the signal, 0~4095
+  * @param Freq： the frequence of signal, 0~(1/2)*SYSCLK
+  * @param Shape： the amplitude of the signal, 0~4095
   * @retval None
   */
 void AD9854_SetAM(uint32_t Freq, uint16_t Shape)
@@ -453,20 +489,24 @@ void AD9854_SetAM(uint32_t Freq, uint16_t Shape)
 
     Address = 0x04; // chose the original value of address
 
-    Freq_convert(Freq);    // change frequence
+    Freq_Convert(Freq);    // change frequence
 
-	for(count=6;count>0;)   // write 6-bit frequence-control 
+    /* write 6-bit frequence-control */
+	for(count=6;count>0;)
     {
 		AD9854_WR_Byte(Address++,FreqWord[--count]);
     }
 
-    AD9854_WR_Byte(0x21, Shape >> 8); // set the amplitude of the channel I
+    /* set the amplitude of the channel I */
+    AD9854_WR_Byte(0x21, Shape >> 8); 
     AD9854_WR_Byte(0x22, (uint8_t)(Shape & 0xff));
 
-    AD9854_WR_Byte(0x23, Shape >> 8); // set the amplitude of the channel Q
+    /* set the amplitude of the channel Q */
+    AD9854_WR_Byte(0x23, Shape >> 8); 
     AD9854_WR_Byte(0x24, (uint8_t)(Shape & 0xff));
 
-    AD9854_UDCLK_SET;   // update output
+    /* update the output */
+    AD9854_UDCLK_SET;
     AD9854_UDCLK_CLR;		
 }
 
@@ -500,9 +540,9 @@ void AD9854_RFSK_Init(void)
 
 /**
   * @brief generate the RFSK signal
-  * @param FreqLow the low frequence of RFSK
-  * @param FreqHigh the high frequence of RFSK
-  * @param FreqUpDown the step frequence of RFSK
+  * @param FreqLow： the low frequence of RFSK
+  * @param FreqHigh： the high frequence of RFSK
+  * @param FreqUpDown： the step frequence of RFSK
   * @param FreRate the ramp rate
   * @retval None
   */
@@ -517,23 +557,26 @@ void AD9854_SetRFSK(uint32_t FreqLow, uint32_t FreqHigh, uint32_t FreqUpDown, ui
     Address2 = 0x0a;
     Address3 = 0x10;
 
-    Freq_convert(FreqLow);    // change frequence
+    Freq_Convert(FreqLow); // change frequence
 
-	for(count=6;count>0;)   // write 6-bit frequence-control 
+    /* write 6-bit frequence-control */
+	for(count=6;count>0;
     {
 		AD9854_WR_Byte(Address1++,FreqWord[--count]);
     }
 
-    Freq_convert(FreqHigh);    // change frequence
+    Freq_Convert(FreqHigh);    // change frequence
 
-	for(count=6;count>0;)   // write 6-bit frequence-control 
+    /* write 6-bit frequence-control */
+	for(count=6;count>0;)
     {
 		AD9854_WR_Byte(Address2++,FreqWord[--count]);
     }
 
-    Freq_convert(FreqUpDown);    // change frequence
+    Freq_Convert(FreqUpDown);    // change frequence
 
-	for(count=6;count>0;)   // write 6-bit frequence-control 
+    /* write 6-bit frequence-control */
+	for(count=6;count>0;)
     {
 		AD9854_WR_Byte(Address3++,FreqWord[--count]);
     }
@@ -542,14 +585,17 @@ void AD9854_SetRFSK(uint32_t FreqLow, uint32_t FreqHigh, uint32_t FreqUpDown, ui
     AD9854_WR_Byte(0x1b, (uint8_t)(FreRate >> 8));
     AD9854_WR_Byte(0x1c, (uint8_t)FreRate);
 
-    AD9854_WR_Byte(0x21, Shape >> 8); // set the amplitude of the channel I
+    /* set the amplitude of the channel I */
+    AD9854_WR_Byte(0x21, Shape >> 8);
     AD9854_WR_Byte(0x22, (uint8_t)(Shape & 0xff));
 
-    AD9854_WR_Byte(0x23, Shape >> 8); // set the amplitude of the channel Q
+    /* set the amplitude of the channel Q */
+    AD9854_WR_Byte(0x23, Shape >> 8);
     AD9854_WR_Byte(0x24, (uint8_t)(Shape & 0xff));
 
-    AD9854_UDCLK_SET;   // update output
-    AD9854_UDCLK_CLR;		
+    /* update the output */
+    AD9854_UDCLK_SET;
+    AD9854_UDCLK_CLR;
 }
 
 /**
@@ -568,13 +614,13 @@ void AD9854_Chirp_Init(void)
 }
 
 /**
-  * @brief generate the RFSK signal
-  * @param FreqLow the low frequence of RFSK
-  * @param FreqUpDown the step frequence of RFSK
-  * @param FreRate the ramp rate
+  * @brief generate the chirp signal
+  * @param FreqLow： the low frequence of chirp
+  * @param FreqUpDown： the step frequence of chirp
+  * @param FreRate： the ramp rate
   * @retval None
   */
-void AD9854_SetRFSK(uint32_t FreqLow, uint32_t FreqUpDown, uint32_t FreRate)
+void AD9854_SetChirp(uint32_t FreqLow, uint32_t FreqUpDown, uint32_t FreRate)
 {
     uint8_t count = 0;
     uint8_t Address1, Address3;
@@ -584,16 +630,18 @@ void AD9854_SetRFSK(uint32_t FreqLow, uint32_t FreqUpDown, uint32_t FreRate)
     Address1 = 0x04; 
     Address3 = 0x10;
 
-    Freq_convert(FreqLow);    // change frequence
+    Freq_Convert(FreqLow);    // change frequence
 
-	for(count=6;count>0;)   // write 6-bit frequence-control 
+    /* write 6-bit frequence-control */
+	for(count=6;count>0;)   
     {
 		AD9854_WR_Byte(Address1++,FreqWord[--count]);
     }
 
-    Freq_convert(FreqUpDown);    // change frequence
+    Freq_Convert(FreqUpDown);    // change frequence
 
-	for(count=6;count>0;)   // write 6-bit frequence-control 
+    /* write 6-bit frequence-control */
+	for(count=6;count>0;) 
     {
 		AD9854_WR_Byte(Address3++,FreqWord[--count]);
     }
@@ -602,15 +650,124 @@ void AD9854_SetRFSK(uint32_t FreqLow, uint32_t FreqUpDown, uint32_t FreRate)
     AD9854_WR_Byte(0x1b, (uint8_t)(FreRate >> 8));
     AD9854_WR_Byte(0x1c, (uint8_t)FreRate);
 
-    AD9854_WR_Byte(0x21, Shape >> 8); // set the amplitude of the channel I
+    /* set the amplitude of the channel I */
+    AD9854_WR_Byte(0x21, Shape >> 8); 
     AD9854_WR_Byte(0x22, (uint8_t)(Shape & 0xff));
 
-    AD9854_WR_Byte(0x23, Shape >> 8); // set the amplitude of the channel Q
+    /* set the amplitude of the channel Q */
+    AD9854_WR_Byte(0x23, Shape >> 8);
     AD9854_WR_Byte(0x24, (uint8_t)(Shape & 0xff));
 
-    AD9854_UDCLK_SET;   // update output
+    /* update the output */
+    AD9854_UDCLK_SET;  
     AD9854_UDCLK_CLR;		
 }
+
+/**
+  * @}
+  */ 
+
+/** @defgroup SPI control
+  * @{
+  */ 
+
+/**
+  * @brief AD9864 SPI port writes the data
+  * @param Adata: the data or the address which would be written
+  * @retval None
+  */ 
+void AD9854_SPI_WR_Byte(uint8_t Adata)
+{
+    uint8_t i;
+
+    for(i = 8; i > 0; i --)
+	{
+		if(Adata & 0x80)
+        {
+            SPI_SDI_Set;
+        }
+        else
+        {
+			SPI_SDI_Clr;
+        }
+		Adata <<= 1;	
+		AD9854_WR_CLR;
+		AD9854_WR_SET;
+	}
+}
+
+/**
+  * @brief AD9854 initialise
+  * @param None
+  * @retval None
+  */
+void AD9854_SPI_Init(void)
+{
+	AD9854_SP_CLR;		// serial control
+	AD9854_WR_CLR;
+	AD9854_UDCLK_CLR;
+	AD9854_RST_SET;    // reset AD9854
+	delay_us (100);
+	AD9854_RST_CLR;
+	SPI_IO_RST_CLR;
+	AD9854_RD_CLR;
+	
+    AD9854_SPI_WR_Byte(CONTR);
+// 	AD9854_SPI_WR_Byte(0x10);   // close the comparator
+	AD9854_SPI_WR_Byte(0x00);   // Start the comparator
+
+	AD9854_SPI_WR_Byte(CLK_Set);    // Set the system clock doubling frequency  
+	AD9854_SPI_WR_Byte(0x00);	// Set the system to mode 0, updated by externally 
+	AD9854_SPI_WR_Byte(0x60);	
+
+    /* update the output */
+	AD9854_UDCLK_SET;   
+	AD9854_UDCLK_CLR;	
+}
+
+/**
+  * @brief sine generate
+  * @param Freq： the frequence of signal, 0~(1/2)*SYSCLK
+  * @param Shape： the amplitude of the signal, 0~4095
+  * @retval None
+  * @note The function should be used when you choose serial control.
+  *       And if you want to use the function @ref Freq_Convert(long Freq) 
+  *       you must use this function to generate the sinusoidal signal.
+  */
+void AD9854_SPI_SetSine(uint32_t Freq,uint32_t Shape)
+{
+	uint8_t count;
+    uint8_t i = 0;
+
+    Freq_convert(Freq); // change frequence
+
+    /* write 6-bit frequence-control */
+    for(count=6;count>0;)
+    {
+		if(i==0)
+			AD9854_SPI_WR_Byte(FREQ1);
+		AD9854_SPI_WR_Byte(FreqWord[--count]);
+		i++;
+    }
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+	/* set the amplitude of the channel I */
+	AD9854_SPI_WR_Byte(SHAPEI);
+	AD9854_SPI_WR_Byte(Shape>>8);
+	AD9854_SPI_WR_Byte((u8)(Shape&0xff));
+	
+    /* set the amplitude of the channel I */
+	AD9854_SPI_WR_Byte(SHAPEQ);
+	AD9854_SPI_WR_Byte(Shape>>8);
+	AD9854_SPI_WR_Byte((u8)(Shape&0xff));
+	
+    /* update the output */
+	AD9854_UDCLK_SET;
+	AD9854_UDCLK_CLR;
+}
+
+/**
+  * @}
+  */ 
 
 /**
   * @}

@@ -17,9 +17,6 @@
 #include "adc.h"
 
 /* Public variables ------------------------------------------------------------------*/
-extern uint16_t Ladc1;
-extern uint16_t Ladc2;
-extern uint16_t Ladc3;
 extern int x, y;
 extern uint8_t penState;
 
@@ -109,15 +106,13 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         case GPIO_PIN_0:
             if(WK_UP==1) 
             {
-                printf("PA0 press down\r\n");
-				hui_graph();    // clear graph
+
             }
             break;
         case GPIO_PIN_4:
             if(KEY0==1)  
             {
-                // printf("PE4 press down\r\n");                       
-				printf("%d,%d,%d\r\n", Ladc1, Ladc2, Ladc3); 
+
             }
             break;
     }
