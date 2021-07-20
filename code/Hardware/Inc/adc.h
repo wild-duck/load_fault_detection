@@ -1,6 +1,6 @@
 /**
   **************************************************************************************
-  * @file timer.c
+  * @file timer.h
   * @author shaokairu
   * @date 2021.7.8
   * @brief This file contains all the functions prototypes for adc library.
@@ -16,8 +16,8 @@
 
 /* Exported functions prototypes -----------------------------------------------------*/
 void ADC1_Init(void); 
-u16  Get_Adc(u32 ch);
-u16 Get_Adc_Average(u32 ch,u8 times);
+uint16_t  Get_Adc(u32 ch);
+uint16_t Get_Adc_Average(u32 ch,u8 times);
 float Change_Adc_Voltage(float adcValue);
 
 #endif 

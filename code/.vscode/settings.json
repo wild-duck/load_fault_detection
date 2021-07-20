@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "usart.h": "c",
+        "ad9854_hal.h": "c",
+        "led.h": "c",
+        "adc.h": "c",
+        "sys.h": "c"
+    }
+}

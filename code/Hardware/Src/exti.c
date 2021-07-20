@@ -15,8 +15,6 @@
 #include "key.h"
 #include "plot.h"
 #include "adc.h"
-#include "filter.h"
-#include "fitted.h"
 
 /* Public variables ------------------------------------------------------------------*/
 extern uint16_t Ladc1;

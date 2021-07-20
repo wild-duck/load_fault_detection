@@ -657,6 +657,48 @@
         </Group>
         <Group>
           <GroupName>hardware</GroupName>
+          <Files>
+            <File>
+              <FileName>adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Src\adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>exti.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Src\exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Src\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Src\lcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>led.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Src\led.c</FilePath>
+            </File>
+            <File>
+              <FileName>plot.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Src\plot.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Src\timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>AD9854_hal.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Src\AD9854_hal.c</FilePath>
+            </File>
+          </Files>
         </Group>
       </Groups>
     </Target>
