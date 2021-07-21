@@ -60,3 +60,6 @@
 .\obj\main.o: .\System\sys\sys.h
 .\obj\main.o: .\System\delay\delay.h
 .\obj\main.o: .\System\usart\usart.h
+.\obj\main.o: .\Hardware\Inc\exti.h
+.\obj\main.o: .\Hardware\Inc\adc.h
+.\obj\main.o: .\Hardware\Inc\AD9854_hal.h

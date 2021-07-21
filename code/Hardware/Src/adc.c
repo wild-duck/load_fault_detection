@@ -14,6 +14,8 @@
 /* Private handle --------------------------------------------------------------------*/
 ADC_HandleTypeDef ADC1_Handler;		//ADC句柄
 
+/* Private varible --------------------------------------------------------------------*/
+
 /**
   * @brief adc1 initialise
   * @param None
@@ -41,7 +43,7 @@ void ADC1_Init(void)
 }
 
 /**
-  * @brief adc driver initialise, three channels,ch1\2\3, are set up
+  * @brief adc driver initialise, three channels,ch1\2\3\4\5, are set up
   * @param hadc: adc handle
   * @retval None
   * @note the function will be called by HAL_ADC_Init()
@@ -55,6 +57,18 @@ void HAL_ADC_MspInit(ADC_HandleTypeDef* hadc)
     GPIO_Initure.Pin=GPIO_PIN_1;            //PA1
     GPIO_Initure.Mode=GPIO_MODE_ANALOG;     //模拟
     GPIO_Initure.Pull=GPIO_NOPULL;          //不带上下拉
+    HAL_GPIO_Init(GPIOA,&GPIO_Initure);
+    
+    GPIO_Initure.Pin=GPIO_PIN_2;            //PA2
+    HAL_GPIO_Init(GPIOA,&GPIO_Initure);
+    
+    GPIO_Initure.Pin=GPIO_PIN_3;            //PA3
+    HAL_GPIO_Init(GPIOA,&GPIO_Initure);
+    
+    GPIO_Initure.Pin=GPIO_PIN_4;            //PA4
+    HAL_GPIO_Init(GPIOA,&GPIO_Initure);
+    
+    GPIO_Initure.Pin=GPIO_PIN_5;            //PA5
     HAL_GPIO_Init(GPIOA,&GPIO_Initure);
 }
 
@@ -93,7 +107,7 @@ uint16_t Get_Adc_Average(uint32_t ch,uint8_t times)
 	for(t=0;t<times;t++)
 	{
 		temp_val+=Get_Adc(ch);
-		delay_us(50);
+		delay_us(20);
 	}
 	return temp_val/times;
 } 

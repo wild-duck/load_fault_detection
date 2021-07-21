@@ -88,6 +88,31 @@ void AD9854_GPIO_Init(void)
     HAL_GPIO_Init(GPIOC, &GPIO_Initure);
 }
 
+/** @brief AD9854 serial-port-control pins configuration
+  * @param None
+  * @retval None
+  */  
+void AD9854_SPI_GPIO_Init(void)
+{
+    GPIO_InitTypeDef GPIO_Initure;
+
+    __HAL_RCC_GPIOB_CLK_ENABLE();
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+
+    GPIO_Initure.Pin = GPIO_PIN_13 | GPIO_PIN_14 | GPIO_PIN_15;
+    GPIO_Initure.Speed = GPIO_SPEED_MEDIUM;
+    GPIO_Initure.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_Initure.Pull = GPIO_PULLUP;
+    HAL_GPIO_Init(GPIOB, &GPIO_Initure);
+
+    GPIO_Initure.Pin = GPIO_PIN_0 | GPIO_PIN_1 | GPIO_PIN_2 | GPIO_PIN_3 |
+                       GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_6;
+    GPIO_Initure.Speed = GPIO_SPEED_MEDIUM;
+    GPIO_Initure.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_Initure.Pull = GPIO_PULLUP;
+    HAL_GPIO_Init(GPIOC, &GPIO_Initure);
+}
+
 /**
   * @}
   */ 
@@ -560,7 +585,7 @@ void AD9854_SetRFSK(uint32_t FreqLow, uint32_t FreqHigh, uint32_t FreqUpDown, ui
     Freq_Convert(FreqLow); // change frequence
 
     /* write 6-bit frequence-control */
-	for(count=6;count>0;
+	for(count=6;count>0;)
     {
 		AD9854_WR_Byte(Address1++,FreqWord[--count]);
     }
@@ -739,7 +764,7 @@ void AD9854_SPI_SetSine(uint32_t Freq,uint32_t Shape)
 	uint8_t count;
     uint8_t i = 0;
 
-    Freq_convert(Freq); // change frequence
+    Freq_Convert(Freq); // change frequence
 
     /* write 6-bit frequence-control */
     for(count=6;count>0;)

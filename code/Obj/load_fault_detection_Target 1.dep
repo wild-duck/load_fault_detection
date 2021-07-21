@@ -1,6 +1,6 @@
 Dependencies for Project 'load_fault_detection', Target 'Target 1': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARMCC
-F (.\Users\main.c)(0x60F5948B)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Core -I .\Hallib\STM32F1xx_HAL_Driver\Inc -I .\System\delay -I .\System\sys -I .\System\usart -I .\Users -I .\Hardware\Inc-IC:\Users\skr\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\1.1.0\Device\Include-D__UVISION_VERSION="534" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\obj\main.o --omf_browse .\obj\main.crf --depend .\obj\main.d)
+F (.\Users\main.c)(0x60F7CF3D)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Core -I .\Hallib\STM32F1xx_HAL_Driver\Inc -I .\System\delay -I .\System\sys -I .\System\usart -I .\Users -I .\Hardware\Inc-IC:\Users\skr\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\1.1.0\Device\Include-D__UVISION_VERSION="534" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\obj\main.o --omf_browse .\obj\main.crf --depend .\obj\main.d)
 I (Users\main.h)(0x59253840)
 I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h)(0x571E2CF8)
 I (.\Users\stm32f1xx_hal_conf.h)(0x572072FC)
@@ -61,6 +61,9 @@ I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_hcd.h)(0x571E2CF8)
 I (.\System\sys\sys.h)(0x59254212)
 I (.\System\delay\delay.h)(0x592658E0)
 I (.\System\usart\usart.h)(0x59253963)
+I (.\Hardware\Inc\exti.h)(0x60E6F8DC)
+I (.\Hardware\Inc\adc.h)(0x60F68BCB)
+I (.\Hardware\Inc\AD9854_hal.h)(0x60F78048)
 F (.\Users\stm32f1xx_hal_msp.c)(0x572072FC)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Core -I .\Hallib\STM32F1xx_HAL_Driver\Inc -I .\System\delay -I .\System\sys -I .\System\usart -I .\Users -I .\Hardware\Inc-IC:\Users\skr\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\1.1.0\Device\Include-D__UVISION_VERSION="534" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\obj\stm32f1xx_hal_msp.o --omf_browse .\obj\stm32f1xx_hal_msp.crf --depend .\obj\stm32f1xx_hal_msp.d)
 I (Users\main.h)(0x59253840)
 I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h)(0x571E2CF8)
@@ -2864,7 +2867,7 @@ I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_pcd.h)(0x571E2CF8)
 I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_usb.h)(0x571E2CF8)
 I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_pcd_ex.h)(0x571E2CF8)
 I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_hcd.h)(0x571E2CF8)
-F (.\Hardware\Src\adc.c)(0x60F564D0)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Core -I .\Hallib\STM32F1xx_HAL_Driver\Inc -I .\System\delay -I .\System\sys -I .\System\usart -I .\Users -I .\Hardware\Inc-IC:\Users\skr\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\1.1.0\Device\Include-D__UVISION_VERSION="534" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\obj\adc.o --omf_browse .\obj\adc.crf --depend .\obj\adc.d)
+F (.\Hardware\Src\adc.c)(0x60F7C702)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Core -I .\Hallib\STM32F1xx_HAL_Driver\Inc -I .\System\delay -I .\System\sys -I .\System\usart -I .\Users -I .\Hardware\Inc-IC:\Users\skr\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\1.1.0\Device\Include-D__UVISION_VERSION="534" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\obj\adc.o --omf_browse .\obj\adc.crf --depend .\obj\adc.d)
 I (.\Hardware\Inc\adc.h)(0x60F68BCB)
 I (.\System\sys\sys.h)(0x59254212)
 I (.\Users\stm32f1xx.h)(0x571DE09C)
@@ -2924,7 +2927,7 @@ I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_usb.h)(0x571E2CF8)
 I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_pcd_ex.h)(0x571E2CF8)
 I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_hcd.h)(0x571E2CF8)
 I (.\System\delay\delay.h)(0x592658E0)
-F (.\Hardware\Src\exti.c)(0x60F6C355)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Core -I .\Hallib\STM32F1xx_HAL_Driver\Inc -I .\System\delay -I .\System\sys -I .\System\usart -I .\Users -I .\Hardware\Inc-IC:\Users\skr\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\1.1.0\Device\Include-D__UVISION_VERSION="534" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\obj\exti.o --omf_browse .\obj\exti.crf --depend .\obj\exti.d)
+F (.\Hardware\Src\exti.c)(0x60F7C702)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Core -I .\Hallib\STM32F1xx_HAL_Driver\Inc -I .\System\delay -I .\System\sys -I .\System\usart -I .\Users -I .\Hardware\Inc-IC:\Users\skr\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\1.1.0\Device\Include-D__UVISION_VERSION="534" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\obj\exti.o --omf_browse .\obj\exti.crf --depend .\obj\exti.d)
 I (.\Hardware\Inc\exti.h)(0x60E6F8DC)
 I (.\System\sys\sys.h)(0x59254212)
 I (.\Users\stm32f1xx.h)(0x571DE09C)
@@ -3292,8 +3295,8 @@ I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_pcd.h)(0x571E2CF8)
 I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_usb.h)(0x571E2CF8)
 I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_pcd_ex.h)(0x571E2CF8)
 I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_hcd.h)(0x571E2CF8)
-F (.\Hardware\Src\AD9854_hal.c)(0x60F6C304)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Core -I .\Hallib\STM32F1xx_HAL_Driver\Inc -I .\System\delay -I .\System\sys -I .\System\usart -I .\Users -I .\Hardware\Inc-IC:\Users\skr\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\1.1.0\Device\Include-D__UVISION_VERSION="534" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\obj\ad9854_hal.o --omf_browse .\obj\ad9854_hal.crf --depend .\obj\ad9854_hal.d)
-I (.\Hardware\Inc\AD9854_hal.h)(0x60F6C167)
+F (.\Hardware\Src\AD9854_hal.c)(0x60F7813F)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Core -I .\Hallib\STM32F1xx_HAL_Driver\Inc -I .\System\delay -I .\System\sys -I .\System\usart -I .\Users -I .\Hardware\Inc-IC:\Users\skr\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\1.1.0\Device\Include-D__UVISION_VERSION="534" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\obj\ad9854_hal.o --omf_browse .\obj\ad9854_hal.crf --depend .\obj\ad9854_hal.d)
+I (.\Hardware\Inc\AD9854_hal.h)(0x60F78048)
 I (.\System\sys\sys.h)(0x59254212)
 I (.\Users\stm32f1xx.h)(0x571DE09C)
 I (.\Users\stm32f103xe.h)(0x571DE09C)

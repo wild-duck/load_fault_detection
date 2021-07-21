@@ -18,7 +18,7 @@
 
 /* Public variables ------------------------------------------------------------------*/
 extern int x, y;
-extern uint8_t penState;
+extern uint8_t sw;
 
 /* Private variables -----------------------------------------------------------------*/
 uint8_t i;
@@ -103,18 +103,17 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     delay_ms(5);      //Ïû¶¶
     switch(GPIO_Pin)
     {
-        case GPIO_PIN_0:
-            if(WK_UP==1) 
-            {
+        case GPIO_PIN_0: if(WK_UP==1) 
+                         {
 
-            }
-            break;
-        case GPIO_PIN_4:
-            if(KEY0==1)  
-            {
+                         }
+                         break;
+        case GPIO_PIN_4: if(KEY0==1)  
+                         {
+                             sw = 1;
+                         }
+break;
 
-            }
-            break;
     }
 }
 
