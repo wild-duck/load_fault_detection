@@ -19,6 +19,7 @@
 /* Public variables ------------------------------------------------------------------*/
 extern int x, y;
 extern uint8_t sw;
+extern uint8_t uartSwitch;
 
 /* Private variables -----------------------------------------------------------------*/
 uint8_t i;
@@ -105,14 +106,23 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     {
         case GPIO_PIN_0: if(WK_UP==1) 
                          {
-
+                            if(uartSwitch == 0)
+                            {
+                                printf("uart open");
+                                uartSwitch = 1;
+                            }
+                            else if(uartSwitch == 1)
+                            {
+                                printf("uart close");
+                                uartSwitch = 0;
+                            }
                          }
                          break;
         case GPIO_PIN_4: if(KEY0==1)  
                          {
                              sw = 1;
                          }
-break;
+                         break;
 
     }
 }

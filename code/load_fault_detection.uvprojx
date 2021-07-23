@@ -698,6 +698,11 @@
               <FileType>1</FileType>
               <FilePath>.\Hardware\Src\AD9854_hal.c</FilePath>
             </File>
+            <File>
+              <FileName>gpio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Hardware\Src\gpio.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

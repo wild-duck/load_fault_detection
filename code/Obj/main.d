@@ -57,9 +57,11 @@
 .\obj\main.o: .\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_ll_usb.h
 .\obj\main.o: .\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_pcd_ex.h
 .\obj\main.o: .\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal_hcd.h
+.\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 .\obj\main.o: .\System\sys\sys.h
 .\obj\main.o: .\System\delay\delay.h
 .\obj\main.o: .\System\usart\usart.h
 .\obj\main.o: .\Hardware\Inc\exti.h
 .\obj\main.o: .\Hardware\Inc\adc.h
 .\obj\main.o: .\Hardware\Inc\AD9854_hal.h
+.\obj\main.o: .\Hardware\Inc\gpio.h

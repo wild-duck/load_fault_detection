@@ -104,6 +104,7 @@ uint16_t Get_Adc_Average(uint32_t ch,uint8_t times)
 {
 	u32 temp_val=0;
 	u8 t;
+    
 	for(t=0;t<times;t++)
 	{
 		temp_val+=Get_Adc(ch);
