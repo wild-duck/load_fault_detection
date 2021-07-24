@@ -1,6 +1,6 @@
 Dependencies for Project 'load_fault_detection', Target 'Target 1': (DO NOT MODIFY !)
 CompilerVersion: 5060960::V5.06 update 7 (build 960)::.\ARMCC
-F (.\Users\main.c)(0x60FAC2AA)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Core -I .\Hallib\STM32F1xx_HAL_Driver\Inc -I .\System\delay -I .\System\sys -I .\System\usart -I .\Users -I .\Hardware\Inc-IC:\Users\skr\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\1.1.0\Device\Include-D__UVISION_VERSION="534" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\obj\main.o --omf_browse .\obj\main.crf --depend .\obj\main.d)
+F (.\Users\main.c)(0x60FBBC62)(--c99 -c --cpu Cortex-M3 -g -O0 --apcs=interwork --split_sections -I .\Core -I .\Hallib\STM32F1xx_HAL_Driver\Inc -I .\System\delay -I .\System\sys -I .\System\usart -I .\Users -I .\Hardware\Inc-IC:\Users\skr\AppData\Local\Arm\Packs\Keil\STM32F1xx_DFP\1.1.0\Device\Include-D__UVISION_VERSION="534" -DSTM32F10X_HD -DUSE_HAL_DRIVER -DSTM32F103xE-o .\obj\main.o --omf_browse .\obj\main.crf --depend .\obj\main.d)
 I (Users\main.h)(0x59253840)
 I (.\Hallib\STM32F1xx_HAL_Driver\Inc\stm32f1xx_hal.h)(0x571E2CF8)
 I (.\Users\stm32f1xx_hal_conf.h)(0x572072FC)

@@ -30,8 +30,11 @@ uint8_t sw = 0; // measurement status flag
 uint8_t DCType = 0;    // the flag of the DC status  
 uint8_t NetType = 0;    // the flag of the curcit network status 
 uint16_t DC = 0;    // the value of reading ADC4
+uint16_t differ = 0;    // the value of reading ADC5 
 uint16_t BackAC[200] ={ 0,}; // the value of reading ADC3
 uint16_t ForwardAC[200]={ 0,};   // the value of reading ADC2
+uint16_t CapAC[40];
+float d;    // short circuit distance
 float Res;
 float ResSample = 0;
 float AveForwardAC = 0;
@@ -83,8 +86,8 @@ uint8_t trend_judge(const uint16_t data[], uint16_t n)
         printf("MaxData=%d,MinData=%d,iMax=%d,iMin=%d,data[0]=%d,data[99]=%d\r\n", MaxData, MinData, iMax, iMin, data[0], data[n - 1]);
         return 5;
     }
-    printf("MaxData=%d,MinData=%d,iMax=%d,iMin=%d,data[0]=%d,data[99]=%d\r\n", MaxData, MinData, iMax, iMin, data[0], data[n - 1]);
-    printf("trendType=%d\r\n", trendType);
+    //printf("MaxData=%d,MinData=%d,iMax=%d,iMin=%d,data[0]=%d,data[99]=%d\r\n", MaxData, MinData, iMax, iMin, data[0], data[n - 1]);
+    //printf("trendType=%d\r\n", trendType);
     return trendType;
 }
 
@@ -95,7 +98,7 @@ uint8_t trend_judge(const uint16_t data[], uint16_t n)
   */
 int main(void)
 {
-    uint16_t i = 0;
+    uint16_t i = 0, j = 0;
     uint32_t fre = 1000;
 
     /* MCU Configuration--------------------------------------------------------------*/
@@ -140,11 +143,11 @@ int main(void)
             delay_ms(300);  // wait the circuit network
             
             /* swap frequence */
-            for(i = 0; i < 200; i ++)    // from 1000 to 50000 step 1000 (Hz) 
+            for(i = 0; i < 200; i ++)    // from 1000 to 100000 step 500 (Hz) 
             {
                 fre = 1000 + 500 * i;
                 AD9854_SPI_SetSine(fre, 4095);
-                delay_ms(10);
+                delay_ms(20);
                 ForwardAC[i] = Get_Adc_Average(ADC_CHANNEL_2,10);
                 BackAC[i] = Get_Adc_Average(ADC_CHANNEL_3,10);
             }
@@ -159,15 +162,15 @@ int main(void)
             }
             AveForwardAC /= 100;
             AveBackAC /= 100;
-            ResSample = (float)DC / (2457.0 - DC) * 99.0;
+            ResSample = (float)DC / (2457.0 - DC) * 99.0;   
             if(DC > 2400)
                 DCType = 0; // open circuit
             else if(DC < 300)
                 DCType = 1; // short circuit
             else
                 DCType = 2; // with a load
-            printf("DC =%d, DCtype=%d\r\n", DC, DCType);
-            printf("ResSample=%f\r\n", ResSample);
+            //printf("DC =%d, DCtype=%d\r\n", DC, DCType);
+            //printf("ResSample=%f\r\n", ResSample);
             if( DCType == 0)    // if open circuit
             {
                 if((590<=BackAC[0]&&BackAC[0]<= 630)&&(590<=BackAC[40]&&BackAC[40]<= 630)&&(590<BackAC[60]&&BackAC[60]<= 630)&&(590<=BackAC[79]&&BackAC[79]<= 630))
@@ -180,19 +183,42 @@ int main(void)
                     switch(trend_judge( BackAC, 100))
                     {
                         case 2: 
-                            if(BackAC[79] < 70)
+                            if(BackAC[199] < 70)
                             {
                                 NetType = 1; // C
                                 for (i = 0; i < 80; i++)
                                 {
-                                    if(BackAC[i] <= AveForwardAC * 0.707)
+                                    if(BackAC[i] <= AveForwardAC * 0.707)   // sqrt(2)/2
                                     {
                                         printf("i=%d, BackAC=%d\r\n", i, BackAC[i]);
                                         break;
                                     }
+                                }   
+
+                                /* swap frequence intensively */                                
+                                fre = 1000 + 500 * (i - 2);
+                                AD9854_SPI_SetSine( fre, 4095);
+                                delay_ms(200);
+                                CapFre = 500 * i;
+                                j=0;
+                                while(fre < 1000+500 * (i + 2))
+                                {
+                                    AD9854_SPI_SetSine( fre, 4095);
+                                    delay_ms(20);
+                                    CapAC[j++] = Get_Adc_Average(ADC_CHANNEL_3,10);
+                                    fre += 50;
                                 }
-                                CapFre = 1000 + 500 * i;
-                                Cap = 1 / (2 * 3.1415926 * CapFre * 99) * 10000000;
+                                
+                                /* Calculate the capacitance value */
+                                for (i = 4; i < 50; i++)
+                                {
+                                    if(CapAC[i] <= AveForwardAC * 0.707)    // sqrt(2)/2
+                                    {
+                                        CapFre += 50 * i;
+                                        break;
+                                    }
+                                } 
+                                Cap = 1 / (2 * 3.1415926 * CapFre * 99) * 1000000;
                             }
                             else
                                 NetType = 2;	// RC serial
@@ -215,6 +241,11 @@ int main(void)
                 if(BackAC[0] < 10 && BackAC[40] < 10 && BackAC[60] < 10 && BackAC[79] <10)
                 {
                     NetType = 5; // short
+                    HAL_GPIO_WritePin( GPIOG, GPIO_PIN_13, GPIO_PIN_SET);   // open the current supply
+                    delay_ms(10);
+                    differ = Get_Adc_Average(ADC_CHANNEL_5,100);
+                    HAL_GPIO_WritePin( GPIOG, GPIO_PIN_13, GPIO_PIN_RESET);   // close the current supply
+                    d = 0.0564327430426673 * differ - 21.481183604046425;   // fitted distance
                 }
                 else
                 {
@@ -228,16 +259,15 @@ int main(void)
                                 NetType = 7; // L
                                 for (i = 0; i < 200; i ++)
                                 {
-                                    if(BackAC[i] >= AveForwardAC * 0.3535)
+                                    if(BackAC[i] >= AveForwardAC * 0.3535)  // sqrt(4)/2 = 0.353
                                     {
-                                        printf("i=%d, BackAC=%d\r\n", i, BackAC[i]);
-                                        //printf("i=%d, BackAC=%d\r\n", i-1, BackAC[i-1]);
                                         break;
                                     }
                                 }
                                 IndFre = 1000 + i * 500;
+                                /* Calculate the  inductance value */
                                 Ind = sqrt((float)(9801 - 7 * ResSample * ResSample + 198 * ResSample) / (276.348923 * IndFre * IndFre)) * 1000000;
-                                Ind = (float)(Ind + (Ind*0.138+1.112));
+                                Ind = 1.2034 * Ind - 16.7457;   // fitted the value
                             }
                             break;
                         case 3:
@@ -258,11 +288,12 @@ int main(void)
                         break;
                     case 0: 
                         NetType = 10; // R 
-                        Res = 99 * AveBackAC / (AveForwardAC - AveBackAC);
+                        Res = 99 * AveBackAC / (AveForwardAC - AveBackAC);  // Calculate the resistance value 
                         break;
                 }
             }
-
+            
+            /* output result */
             if(NetType == 0)
                 printf("open\r\n");
             else if(NetType == 1)
@@ -277,7 +308,11 @@ int main(void)
             else if(NetType == 4)
                 printf("LC serial\r\n");
             else if(NetType == 5)
+            {
                 printf("short\r\n");
+                printf("differ=%d\r\n", differ);
+                printf("d=%fcm\r\n", d);
+            }
             else if(NetType == 6)
                 printf("LR parallel\r\n");
             else if(NetType == 7)
@@ -297,12 +332,16 @@ int main(void)
             else if(NetType == 11)
                 printf("LC parallel\r\n");
             
+            /* output the value of the array */
             if(uartSwitch == 1)
             {
                 printf("DCType=%d\r\n", DCType);
                 for(i = 0; i < 80; i ++)
                     printf("forward=%d,back=%d\r\n", ForwardAC[i], BackAC[i]);
+                for(i = 0; i < 40; i ++)
+                    printf("capAC=%d\r\n", CapAC[i]);
             }
+            
             sw = 0; // claer flag
         }
     }
